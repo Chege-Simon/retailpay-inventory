@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HandlesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Inventory extends Model
 {
+    use HandlesUuid;
+
     protected $table = 'inventories';
 
     protected $guarded = [];

@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HandlesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Cache;
 
 class Sale extends Model
 {
+    use HandlesUuid;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -40,12 +44,19 @@ class Sale extends Model
     {
         $prefix = 'SAL';
         $date = now()->format('Ymd');
-        $lastSale = static::whereDate('created_at', today())->latest()->first();
-        
-        $sequence = $lastSale ? (int)substr($lastSale->sale_number, -4) + 1 : 1;
-        
+        $cacheKey = 'last-sale-number';
+
+        $lastSaleNumber = Cache::lock($cacheKey, 10)->block(5, function () {
+            return static::whereDate('created_at', today())
+                ->latest()
+                ->value('sale_number');
+        });
+
+        $sequence = $lastSaleNumber ? (int) substr($lastSaleNumber, -4) + 1 : 1;
+
         return sprintf('%s-%s-%04d', $prefix, $date, $sequence);
     }
+
 
     public function calculateTotal(): void
     {

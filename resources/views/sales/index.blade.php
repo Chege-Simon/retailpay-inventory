@@ -106,7 +106,7 @@
     
     @if($sales->hasPages())
     <div class="p-3 border-top">
-        {{ $sales->links() }}
+        {{ $sales->links('pagination::bootstrap-5') }}
     </div>
     @endif
 </div>

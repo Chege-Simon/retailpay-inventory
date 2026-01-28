@@ -8,12 +8,9 @@
         <h2 class="fw-bold">Inventory Report</h2>
         <p class="text-muted">Comprehensive stock analysis across all locations</p>
     </div>
-    <div>
+    <div class="no-print">
         <button class="btn btn-outline-primary" onclick="window.print()">
             <i class="bi bi-printer"></i> Print Report
-        </button>
-        <button class="btn btn-outline-success">
-            <i class="bi bi-file-earmark-excel"></i> Export Excel
         </button>
     </div>
 </div>
@@ -82,11 +79,11 @@
             </thead>
             <tbody>
                 @foreach($products as $product)
+                @php $totalQty = 0; @endphp
                 <tr>
                     <td><strong>{{ $product->name }}</strong></td>
                     <td><code>{{ $product->sku }}</code></td>
                     
-                    @php $totalQty = 0; @endphp
                     @foreach($stockByStore as $storeId => $data)
                         @php
                             $inventory = $product->inventory->firstWhere('store_id', $storeId);
@@ -113,13 +110,9 @@
             <tfoot class="table-light">
                 <tr>
                     <td colspan="{{ count($stockByStore) + 2 }}" class="text-end fw-bold">Grand Total:</td>
-                    <td class="text-center fw-bold">
-                        {{ $products->sum(function($p) { return $p->inventory->sum('quantity'); }) }}
-                    </td>
+                    <td class="text-center fw-bold">{{ $grandTotalQty }}</td>
                     <td class="text-end fw-bold text-success">
-                        KES {{ number_format($products->sum(function($p) { 
-                            return $p->inventory->sum('quantity') * $p->unit_price; 
-                        }), 2) }}
+                        KES {{ number_format($grandTotalValue, 2) }}
                     </td>
                 </tr>
             </tfoot>
@@ -128,22 +121,11 @@
 </div>
 
 <!-- Low Stock Alert Section -->
-@php
-    $lowStockItems = [];
-    foreach($products as $product) {
-        foreach($product->inventory as $inv) {
-            if($inv->isLowStock()) {
-                $lowStockItems[] = $inv;
-            }
-        }
-    }
-@endphp
-
-@if(count($lowStockItems) > 0)
+@if($lowStockItems->count() > 0)
 <div class="table-card">
     <div class="p-3 border-bottom bg-warning bg-opacity-10">
         <h5 class="mb-0 text-warning">
-            <i class="bi bi-exclamation-triangle"></i> Low Stock Alert ({{ count($lowStockItems) }} items)
+            <i class="bi bi-exclamation-triangle"></i> Low Stock Alert ({{ $lowStockItems->count() }} items)
         </h5>
     </div>
     <div class="table-responsive">
@@ -169,15 +151,9 @@
                         {{ $item->store->name }}<br>
                         <small class="text-muted">{{ $item->store->branch->name }}</small>
                     </td>
-                    <td>
-                        <span class="badge bg-danger">{{ $item->quantity }}</span>
-                    </td>
+                    <td><span class="badge bg-danger">{{ $item->quantity }}</span></td>
                     <td>{{ $item->minimum_stock }}</td>
-                    <td>
-                        <span class="text-danger fw-bold">
-                            {{ $item->minimum_stock - $item->quantity }}
-                        </span>
-                    </td>
+                    <td><span class="text-danger fw-bold">{{ $item->minimum_stock - $item->quantity }}</span></td>
                     <td>
                         <span class="badge bg-warning text-dark">
                             <i class="bi bi-exclamation-circle"></i> Restock Required
@@ -190,13 +166,12 @@
     </div>
 </div>
 @endif
-
 @endsection
 
 @section('styles')
 <style>
 @media print {
-    .sidebar, .navbar, .btn, .page-header .btn-group {
+    .sidebar, .navbar, .btn, .page-header .btn-group, .no-print {
         display: none !important;
     }
     .col-md-10 {

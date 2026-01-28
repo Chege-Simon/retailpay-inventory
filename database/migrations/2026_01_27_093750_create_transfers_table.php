@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('transfers', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid');
             $table->string('transfer_number')->unique();
             $table->foreignId('from_store_id')->constrained('stores')->onDelete('cascade');
             $table->foreignId('to_store_id')->constrained('stores')->onDelete('cascade');

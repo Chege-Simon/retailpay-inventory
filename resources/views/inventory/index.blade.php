@@ -10,6 +10,69 @@
     </div>
 </div>
 
+<!-- Summary Cards -->
+<div class="row g-4 mt-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Total Items</p>
+                    <h3 class="fw-bold mb-0">{{ $inventory->total() }}</h3>
+                </div>
+                <div class="icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Low Stock Items</p>
+                    <h3 class="fw-bold mb-0">
+                        {{ $inventory->filter(fn($i) => $i->isLowStock())->count() }}
+                    </h3>
+                </div>
+                <div class="icon bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Total Quantity</p>
+                    <h3 class="fw-bold mb-0">{{ $totalItems }}</h3>
+                </div>
+                <div class="icon bg-info bg-opacity-10 text-info">
+                    <i class="bi bi-layers"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Total Value</p>
+                    <h3 class="fw-bold mb-0">
+                        KES {{ number_format($totalValue, 2) }}
+                    </h3>
+                </div>
+                <div class="icon bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Filters -->
 <div class="table-card p-3 mb-4">
     <form method="GET" action="{{ route('inventory.index') }}" class="row g-3">
@@ -112,74 +175,11 @@
             </tbody>
         </table>
     </div>
-    
     @if($inventory->hasPages())
-    <div class="p-3 border-top">
-        {{ $inventory->links() }}
-    </div>
+        <div class="p-3 border-top">
+            {{ $inventory->links('pagination::bootstrap-5') }}
+        </div>
     @endif
 </div>
 
-<!-- Summary Cards -->
-<div class="row g-4 mt-4">
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <p class="text-muted mb-1">Total Items</p>
-                    <h3 class="fw-bold mb-0">{{ $inventory->total() }}</h3>
-                </div>
-                <div class="icon bg-primary bg-opacity-10 text-primary">
-                    <i class="bi bi-box-seam"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <p class="text-muted mb-1">Low Stock Items</p>
-                    <h3 class="fw-bold mb-0">
-                        {{ $inventory->filter(fn($i) => $i->isLowStock())->count() }}
-                    </h3>
-                </div>
-                <div class="icon bg-warning bg-opacity-10 text-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <p class="text-muted mb-1">Total Quantity</p>
-                    <h3 class="fw-bold mb-0">{{ $inventory->sum('quantity') }}</h3>
-                </div>
-                <div class="icon bg-info bg-opacity-10 text-info">
-                    <i class="bi bi-layers"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <p class="text-muted mb-1">Total Value</p>
-                    <h3 class="fw-bold mb-0">
-                        KES {{ number_format($inventory->sum(fn($i) => $i->quantity * $i->product->unit_price), 2) }}
-                    </h3>
-                </div>
-                <div class="icon bg-success bg-opacity-10 text-success">
-                    <i class="bi bi-currency-dollar"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection

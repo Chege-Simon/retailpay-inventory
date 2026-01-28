@@ -24,7 +24,12 @@
                     <select class="form-select @error('store_id') is-invalid @enderror" id="store_id" name="store_id" required>
                         <option value="">Choose a store...</option>
                         @foreach($stores as $store)
-                            <option value="{{ $store->id }}" {{ old('store_id') == $store->id ? 'selected' : '' }}>
+                            <option value="{{ $store->id }}"
+                                @if(Auth::check() && Auth::user()->store_id == $store->id)
+                                    selected
+                                @elseif(old('store_id') == $store->id)
+                                    selected
+                                @endif>
                                 {{ $store->branch->name }} - {{ $store->name }}
                             </option>
                         @endforeach

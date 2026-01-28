@@ -8,29 +8,37 @@ use App\Models\Store;
 use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\StockMovement;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class SalesController extends Controller
 {
     public function index(Request $request)
     {
         $query = Sale::with(['store.branch', 'user']);
+        if (Auth::user()->role != 'admin') {
+            $query->whereHas('store', function ($q) {
+                $q->where('branch_id', Auth::user()->branch_id);
+            });
+        }
 
         if ($request->has('store_id')) {
             $query->where('store_id', $request->store_id);
         }
 
-        if ($request->has('date_from')) {
-            $query->whereDate('sale_date', '>=', $request->date_from);
+        if ($request->filled('date_from')) {
+            $query->whereDate('sale_date', '>=', Carbon::parse($request->date_from)->format('Y-m-d'));
         }
 
-        if ($request->has('date_to')) {
-            $query->whereDate('sale_date', '<=', $request->date_to);
+        if ($request->filled('date_to')) {
+            $query->whereDate('sale_date', '<=', Carbon::parse($request->date_to)->format('Y-m-d'));
         }
 
-        $sales = $query->latest('sale_date')->paginate(20);
+
+        $sales = $query->latest('sale_date')->paginate(10);
         $stores = Store::with('branch')->get();
 
         return view('sales.index', compact('sales', 'stores'));
@@ -38,12 +46,17 @@ class SalesController extends Controller
 
     public function create()
     {
-        $stores = Store::with('branch')->where('is_active', true)->get();
+        $stores_query = Store::with('branch')->where('is_active', true);
+        
+        if (Auth::user()->role != 'admin') {
+            $stores_query->where('branch_id', Auth::user()->branch_id);
+        }
+        $stores = $stores_query->get();
         $products = Product::where('is_active', true)->get();
-
+        
         return view('sales.create', compact('stores', 'products'));
-    }
-
+        }
+        
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -52,6 +65,12 @@ class SalesController extends Controller
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
+
+        $this->authorize('create', Store::where('id', $validated['store_id'])->firstOrFail());
+        // if (! Gate::allows('create', Store::where('id', $validated['store_id'])->firstOrFail())) 
+        // {
+        //     abort(403); 
+        // }
 
         DB::beginTransaction();
 
@@ -110,6 +129,7 @@ class SalesController extends Controller
     public function show(Sale $sale)
     {
         $sale->load(['store.branch', 'items.product', 'user']);
+        $this->authorize('view', $sale);
         return view('sales.show', compact('sale'));
     }
 

@@ -9,6 +9,7 @@
 </div>
 
 <!-- Stats Cards -->
+ @if (Auth()->user()->role == 'admin')
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="stat-card">
@@ -52,7 +53,7 @@
         </div>
     </div>
 </div>
-
+@endif
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="stat-card">

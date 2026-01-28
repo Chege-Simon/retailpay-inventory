@@ -121,27 +121,33 @@
                     <h4 class="text-white fw-bold mb-4">
                         <i class="bi bi-shop text-primary"></i> KK Wholesalers
                     </h4>
-                    
                     <nav class="nav flex-column">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                        <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
-                            <i class="bi bi-cart-check"></i> Sales
-                        </a>
-                        <a class="nav-link {{ request()->routeIs('transfers.*') ? 'active' : '' }}" href="{{ route('transfers.index') }}">
-                            <i class="bi bi-arrow-left-right"></i> Transfers
-                        </a>
-                        <a class="nav-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}" href="{{ route('inventory.index') }}">
-                            <i class="bi bi-box-seam"></i> Inventory
-                        </a>
-                        <a class="nav-link" href="{{ route('inventory.movements') }}">
-                            <i class="bi bi-clock-history"></i> Stock Movements
-                        </a>
-                        <a class="nav-link" href="{{ route('inventory.report') }}">
-                            <i class="bi bi-file-earmark-bar-graph"></i> Reports
-                        </a>
-                    </nav>
+    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+
+    <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
+        <i class="bi bi-cart-check"></i> Sales
+    </a>
+
+    <a class="nav-link {{ request()->routeIs('transfers.*') ? 'active' : '' }}" href="{{ route('transfers.index') }}">
+        <i class="bi bi-arrow-left-right"></i> Transfers
+    </a>
+
+    <!-- Inventory parent -->
+    <a class="nav-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}" href="{{ route('inventory.index') }}">
+        <i class="bi bi-box-seam"></i> Inventory
+    </a>
+    <div class="nav flex-column ms-3">
+        <a class="nav-link {{ request()->routeIs('inventory.movements') ? 'active' : '' }}" href="{{ route('inventory.movements') }}">
+            <i class="bi bi-clock-history"></i> Audit
+        </a>
+        <a class="nav-link {{ request()->routeIs('inventory.report') ? 'active' : '' }}" href="{{ route('inventory.report') }}">
+            <i class="bi bi-file-earmark-bar-graph"></i> Reports
+        </a>
+    </div>
+</nav>
+
                 </div>
             </div>
             
@@ -157,12 +163,23 @@
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                        <i class="bi bi-person-circle"></i> System Admin
+                                        <i class="bi bi-person-circle"></i> {{Auth::user()->name }} - ( {{Auth::user()->role}} )
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                                        <!-- <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="bi bi-person"></i> Profile
+                                            </a>
+                                        </li> -->
+                                        <!-- <li><hr class="dropdown-divider"></li> -->
+                                        <li>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                                </button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
