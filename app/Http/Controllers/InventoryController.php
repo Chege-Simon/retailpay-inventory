@@ -55,6 +55,12 @@ class InventoryController extends Controller
     {
         $query = StockMovement::with(['product', 'store.branch', 'user']);
 
+        if (Auth::user()->role != 'admin') {
+            $query->whereHas('store', function ($q) {
+                $q->where('branch_id', Auth::user()->branch_id);
+            });
+        }
+        
         if ($request->has('store_id')) {
             $query->where('store_id', $request->store_id);
         }
@@ -75,7 +81,7 @@ class InventoryController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $movements = $query->latest()->paginate(50);
+        $movements = $query->latest()->paginate(20);
         $stores = Store::with('branch')->get();
         $products = Product::all();
 

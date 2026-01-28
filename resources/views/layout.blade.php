@@ -144,9 +144,11 @@
                             <a class="nav-link {{ request()->routeIs('inventory.movements') ? 'active' : '' }}" href="{{ route('inventory.movements') }}">
                                 <i class="bi bi-clock-history"></i> Audit
                             </a>
-                            <a class="nav-link {{ request()->routeIs('inventory.report') ? 'active' : '' }}" href="{{ route('inventory.report') }}">
-                                <i class="bi bi-file-earmark-bar-graph"></i> Reports
-                            </a>
+                            @if(Auth::user()->role == 'admin')
+                                <a class="nav-link {{ request()->routeIs('inventory.report') ? 'active' : '' }}" href="{{ route('inventory.report') }}">
+                                    <i class="bi bi-file-earmark-bar-graph"></i> Reports
+                                </a>
+                            @endif
                         </div>
                     </nav>
 
