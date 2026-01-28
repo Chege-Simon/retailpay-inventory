@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,12 +35,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Branch 1 - Nairobi',
             'location' => 'Nairobi CBD',
             'is_active' => true,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         $branch2 = Branch::create([
             'name' => 'Branch 2 - Kiambu',
             'location' => 'Ruiru, Kiambu',
             'is_active' => true,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         // Create Stores
@@ -48,6 +51,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Store 1A - Main',
             'location' => 'Ground Floor, Nairobi CBD',
             'is_active' => true,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         $store2 = Store::create([
@@ -55,6 +59,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Store 2A - North',
             'location' => 'Ruiru Mall, 1st Floor',
             'is_active' => true,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         $store3 = Store::create([
@@ -62,6 +67,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Store 2B - South',
             'location' => 'Ruiru Town Center',
             'is_active' => true,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         // Create Administrator
@@ -72,6 +78,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'branch_id' => null,
             'store_id' => null,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         // Create Branch Managers
@@ -82,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'branch_manager',
             'branch_id' => $branch1->id,
             'store_id' => null,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         User::create([
@@ -91,6 +99,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'branch_manager',
             'branch_id' => $branch2->id,
             'store_id' => null,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         // Create Store Managers
@@ -101,6 +110,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'store_manager',
             'branch_id' => $branch1->id,
             'store_id' => $store1->id,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         User::create([
@@ -110,6 +120,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'store_manager',
             'branch_id' => $branch2->id,
             'store_id' => $store2->id,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         User::create([
@@ -119,6 +130,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'store_manager',
             'branch_id' => $branch2->id,
             'store_id' => $store3->id,
+            'uuid' => Str::uuid()->toString()
         ]);
 
         // Create 10 Products (SKUs)
@@ -136,6 +148,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
+            $productData['uuid'] = Str::uuid()->toString();
             $product = Product::create($productData);
 
             // Initialize inventory for each store with random quantities
@@ -145,6 +158,7 @@ class DatabaseSeeder extends Seeder
                     'store_id' => $store->id,
                     'quantity' => rand(50, 200),
                     'minimum_stock' => rand(10, 30),
+                    'uuid' => Str::uuid()->toString()
                 ]);
             }
         }

@@ -40,8 +40,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [TransfersController::class, 'index'])->name('index');
         Route::get('/create', [TransfersController::class, 'create'])->name('create');
         Route::post('/', [TransfersController::class, 'store'])->name('store');
+        Route::get('/add', [TransfersController::class, 'addrequest'])->name('add');
+        Route::post('/request-restock', [TransfersController::class, 'requestRestock'])->name('requesttransfer');
         Route::get('/{transfer}', [TransfersController::class, 'show'])->name('show');
-        Route::post('/{transfer}/complete', [TransfersController::class, 'complete'])->name('complete');
+        Route::post('/{transfer}/forward', [TransfersController::class, 'forwardToAdmin'])->name('forward');
+        Route::post('/{transfer}/approve', [TransfersController::class, 'approveAndAssignSource'])->name('approve');
+        Route::post('/{transfer}/ship', [TransfersController::class, 'acknowledgeShipment'])->name('ship');
+        Route::post('/{transfer}/receive', [TransfersController::class, 'acknowledgeReceipt'])->name('receive');
         Route::post('/{transfer}/cancel', [TransfersController::class, 'cancel'])->name('cancel');
         Route::get('/store/{storeId}/inventory', [TransfersController::class, 'getStoreInventory'])->name('store.inventory');
     });
@@ -49,6 +54,7 @@ Route::middleware('auth')->group(function () {
     // Inventory Routes
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/add', [InventoryController::class, 'create'])->name('add');
         Route::get('/movements', [InventoryController::class, 'movements'])->name('movements');
         Route::get('/report', [InventoryController::class, 'report'])->name('report');
     });

@@ -49,7 +49,7 @@
                             <input type="hidden" name="email" value="john.mwangi@kkwholesalers.com">
                             <input type="hidden" name="password" value="password123">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-person-badge"></i> Branch Manager (John)
+                                <i class="bi bi-person-badge"></i> Branch Manager (John) {Branch A}
                             </button>
                         </form>
 
@@ -58,7 +58,7 @@
                             <input type="hidden" name="email" value="mary.njeri@kkwholesalers.com">
                             <input type="hidden" name="password" value="password123">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-person-badge"></i> Branch Manager (Mary)
+                                <i class="bi bi-person-badge"></i> Branch Manager (Mary) {Branch B}
                             </button>
                         </form>
 
@@ -67,7 +67,7 @@
                             <input type="hidden" name="email" value="peter.kamau@kkwholesalers.com">
                             <input type="hidden" name="password" value="password123">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-shop"></i> Store Manager (Peter)
+                                <i class="bi bi-shop"></i> Store Manager (Peter){Branch 1 Store 1A}
                             </button>
                         </form>
 
@@ -76,7 +76,7 @@
                             <input type="hidden" name="email" value="alice.wanjiku@kkwholesalers.com">
                             <input type="hidden" name="password" value="password123">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-shop"></i> Store Manager (Alice)
+                                <i class="bi bi-shop"></i> Store Manager (Alice){Branch 2  Store 2A}
                             </button>
                         </form>
 
@@ -85,7 +85,7 @@
                             <input type="hidden" name="email" value="james.ochieng@kkwholesalers.com">
                             <input type="hidden" name="password" value="password123">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-shop"></i> Store Manager (James)
+                                <i class="bi bi-shop"></i> Store Manager (James){Branch 2  Store 2B}
                             </button>
                         </form>
                     </div>

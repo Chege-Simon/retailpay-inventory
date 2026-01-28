@@ -8,6 +8,14 @@
         <h2 class="fw-bold">Inventory Management</h2>
         <p class="text-muted">Monitor stock levels across all stores</p>
     </div>
+    <div>
+        <!-- <a href="{{ route('inventory.add') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Restock Product
+        </a> -->
+        <a href="{{ route('transfers.add') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Request Transfers
+        </a>
+    </div>
 </div>
 
 <!-- Summary Cards -->
@@ -136,6 +144,7 @@
                     <th>Min Stock</th>
                     <th>Status</th>
                     <th>Value</th>
+                    <!-- <th>Action</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -163,6 +172,18 @@
                         @endif
                     </td>
                     <td>KES {{ number_format($item->quantity * $item->product->unit_price, 2) }}</td>
+                    <!-- <td>
+                        <form method="POST" action="{{ route('transfers.requesttransfer') }}">
+                            @csrf
+                            <input type="hidden" name="store_id" value="{{ $item->store->id }}">
+                            <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                            <input type="hidden" name="quantity" value="10">
+                            <input type="hidden" name="notes" value="">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-patch-plus-fill"></i> Request Transafer
+                            </button>
+                        </form>
+                    </td> -->
                 </tr>
                 @empty
                 <tr>

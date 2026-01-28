@@ -6,6 +6,7 @@ use App\Traits\HandlesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Cache;
 
 class Transfer extends Model
 {
@@ -34,9 +35,24 @@ class Transfer extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function initiatedByUser(): BelongsTo
+    public function requestedByUser(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'initiated_by');
+        return $this->belongsTo(User::class, 'requested_by');
+    }
+
+    public function forwardedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'forwarded_by');
+    }
+
+    public function approvedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function shippedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'shipped_by');
     }
 
     public function receivedByUser(): BelongsTo
@@ -48,20 +64,26 @@ class Transfer extends Model
     {
         return $this->morphMany(StockMovement::class, 'reference');
     }
-
+    
     public static function generateTransferNumber(): string
     {
         $prefix = 'TRF';
         $date = now()->format('Ymd');
-        $lastTransfer = static::whereDate('created_at', today())->latest()->first();
-        
-        $sequence = $lastTransfer ? (int)substr($lastTransfer->transfer_number, -4) + 1 : 1;
-        
+        $cacheKey = 'last-transfer-number';
+
+        $lastTransferNumber = Cache::lock($cacheKey, 10)->block(5, function () {
+            return static::whereDate('created_at', today())
+                ->latest()
+                ->value('transfer_number');
+        });
+
+        $sequence = $lastTransferNumber ? (int) substr($lastTransferNumber, -4) + 1 : 1;
+
         return sprintf('%s-%s-%04d', $prefix, $date, $sequence);
     }
 
     public function isInterBranch(): bool
     {
-        return $this->fromStore->branch_id !== $this->toStore->branch_id;
+        return $this->fromStore?->branch_id !== $this->toStore?->branch_id;
     }
 }

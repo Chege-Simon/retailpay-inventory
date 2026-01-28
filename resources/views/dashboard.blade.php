@@ -198,7 +198,7 @@
                             <th>To</th>
                             <th>Quantity</th>
                             <th>Status</th>
-                            <th>Date</th>
+                            <th>Creation Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -210,13 +210,15 @@
                                 </a>
                             </td>
                             <td>{{ $transfer->product->name }}</td>
-                            <td>{{ $transfer->fromStore->name }}</td>
+                            <td>{{ $transfer->fromStore?->name }}</td>
                             <td>{{ $transfer->toStore->name }}</td>
                             <td>{{ $transfer->quantity }}</td>
                             <td>
                                 @php
                                     $statusColors = [
-                                        'pending' => 'warning',
+                                        'requested' => 'warning',
+                                        'pending_admin_approval' => 'warning',
+                                        'approved' => 'info',
                                         'in_transit' => 'info',
                                         'completed' => 'success',
                                         'cancelled' => 'danger'
@@ -226,7 +228,7 @@
                                     {{ ucfirst($transfer->status) }}
                                 </span>
                             </td>
-                            <td>{{ $transfer->transfer_date->format('M d, Y H:i') }}</td>
+                            <td>{{ optional($transfer->created_at)->format('M d, Y H:i') ?? '-' }}</td>
                         </tr>
                         @empty
                         <tr>

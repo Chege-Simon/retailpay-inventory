@@ -22,11 +22,15 @@ class DashboardController extends Controller
             'today_revenue' => Sale::whereDate('sale_date', today())->whereHas('store', function ($q) {
                 $q->where('branch_id', Auth::user()->branch_id);
                 })->sum('total_amount'),
-            'pending_transfers' => Transfer::where('status', 'pending')->whereHas('fromStore', function ($q) {
-                $q->where('branch_id', Auth::user()->branch_id);
-                })
-                ->orWhereHas('toStore', function ($q) {
+            // 'pending_transfers' => Transfer::whereNotIn('status', ['requested','pending_admin_approval', 'approved', 'in_transit'])
+            'pending_transfers' => Transfer::whereNotIn('status', ['completed', 'cancelled'])
+            ->where(function ($q) {
+                $q->whereHas('fromStore', function ($q) {
                     $q->where('branch_id', Auth::user()->branch_id);
+                    })
+                    ->orWhereHas('toStore', function ($q) {
+                        $q->where('branch_id', Auth::user()->branch_id);
+                    });
                 })->count(),
         ];
         

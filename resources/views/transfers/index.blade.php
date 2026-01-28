@@ -8,9 +8,11 @@
         <h2 class="fw-bold">Transfer Management</h2>
         <p class="text-muted">Manage inventory transfers between stores</p>
     </div>
+    @if(Auth::user()->role === 'admin')
     <a href="{{ route('transfers.create') }}" class="btn btn-primary">
         <i class="bi bi-plus-lg"></i> New Transfer
     </a>
+    @endif
 </div>
 
 <!-- Filters -->
@@ -66,7 +68,7 @@
                     <th>Quantity</th>
                     <th>Type</th>
                     <th>Status</th>
-                    <th>Date</th>
+                    <th>Date Created</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -83,8 +85,8 @@
                         <small class="text-muted">{{ $transfer->product->sku }}</small>
                     </td>
                     <td>
-                        {{ $transfer->fromStore->name }}<br>
-                        <small class="text-muted">{{ $transfer->fromStore->branch->name }}</small>
+                        {{ $transfer->fromStore?->name }}<br>
+                        <small class="text-muted">{{ $transfer->fromStore?->branch?->name }}</small>
                     </td>
                     <td>
                         {{ $transfer->toStore->name }}<br>
@@ -101,17 +103,19 @@
                     <td>
                         @php
                             $statusColors = [
-                                'pending' => 'warning',
-                                'in_transit' => 'info',
-                                'completed' => 'success',
-                                'cancelled' => 'danger'
+                                        'requested' => 'warning',
+                                        'pending_admin_approval' => 'warning',
+                                        'approved' => 'info',
+                                        'in_transit' => 'info',
+                                        'completed' => 'success',
+                                        'cancelled' => 'danger'
                             ];
                         @endphp
                         <span class="badge bg-{{ $statusColors[$transfer->status] }}">
                             {{ ucfirst(str_replace('_', ' ', $transfer->status)) }}
                         </span>
                     </td>
-                    <td>{{ $transfer->transfer_date->format('M d, Y H:i') }}</td>
+                    <td>{{ optional($transfer->created_at)->format('M d, Y H:i') ?? '-' }}</td>
                     <td>
                         <a href="{{ route('transfers.show', $transfer) }}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-eye"></i> View

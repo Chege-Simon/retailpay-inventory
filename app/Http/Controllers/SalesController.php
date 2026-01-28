@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class SalesController extends Controller
 {
@@ -82,6 +83,7 @@ class SalesController extends Controller
                 'total_amount' => 0,
                 'status' => 'completed',
                 'sale_date' => now(),
+                'uuid' => Str::uuid()->toString()
             ]);
 
             foreach ($validated['items'] as $item) {
@@ -99,6 +101,7 @@ class SalesController extends Controller
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
                     'unit_price' => $product->unit_price,
+                    'uuid' => Str::uuid()->toString()
                 ]);
 
                 // Record stock movement

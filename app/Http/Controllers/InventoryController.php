@@ -45,6 +45,12 @@ class InventoryController extends Controller
         return view('inventory.index', compact('inventory', 'stores', 'products', 'totalItems', 'totalValue'));
     }
 
+    public function create()
+    {
+        
+        return view('inventory.add', compact('categories'));
+    }
+
     public function movements(Request $request)
     {
         $query = StockMovement::with(['product', 'store.branch', 'user']);
